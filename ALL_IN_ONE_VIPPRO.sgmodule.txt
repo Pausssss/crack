@@ -1,0 +1,92 @@
+#!name=ALL IN ONE VIP PRO
+#!desc=By: Paus
+# Cập nhật: 09-07-2025
+# Ðược tối uu và nâng cấp bởi ChatGPT (yêu cầu từ người dùng)
+# Luu ý: B?t MITM và Import dúng script nếu cần thiết
+
+[General]
+bypass-system = true
+skip-proxy = *.local, *.crashlytics.com
+tun-excluded-routes = 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12
+
+[Rule]
+AND,((DOMAIN-SUFFIX,googlevideo.com),(PROTOCOL,UDP)),REJECT
+AND,((DOMAIN,youtubei.googleapis.com),(PROTOCOL,UDP)),REJECT
+
+[URL Rewrite]
+(^https?://[\w-]+\.googlevideo\.com/(?!dclk_video_ads).+?)&ctier=L(&.+?),ctier,(.+) $1$2$3 302
+^https?://[\w-]+\.googlevideo\.com/(?!(dclk_video_ads|videoplayback?)).+&oad _ reject-200
+^https?://(www|s)\.youtube\.com/api/stats/ads _ reject-200
+^https?://(www|s)\.youtube\.com/(pagead|ptracking) _ reject-200
+^https?://s\.youtube\.com/api/stats/qoe\?adcontext _ reject-200
+
+[MITM]
+hostname = %APPEND%
+  api-capcut.com,
+  api.revenuecat.com,
+  buy.itunes.apple.com,
+  api.picsart.com,
+  us-central1-alight-creative.cloudfunctions.net,
+  api.adapty.io,
+  carrotweather.herokuapp.com,
+  lcs-mobile-cops.adobe.io,
+  order.creativeappnow.com,
+  api.mwm-users.com,
+  us-central1-muslim-pro-app.cloudfunctions.net,
+  api.gptkeyboard.app,
+  prod.studysmarter.de,
+  api.qonversion.io,
+  api.blinkist.com,
+  subscription.grammarly.com,
+  api.esound.app,
+  api.purchasely.io,
+  spclient.wg.spotify.com,
+  api-sub.meitu.com,
+  redirector*.googlevideo.com,
+  *.googlevideo.com,
+  www.youtube.com,
+  s.youtube.com,
+  youtubei.googleapis.com,
+  api-mobile.soundcloud.com,
+  photos.adobe.io
+
+[Script]
+
+# ===== RevenueCat Bypass =====
+revenuecat = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/[^/]+$), script-path=https://raw.githubusercontent.com/dhungx/modules-shadowrocket/refs/heads/main/js/locket/Locket.js, requires-body=true, timeout=60, tag=RevenueCat Locket
+
+deleteHeader = type=http-request, pattern=^https:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers), script-path=https://raw.githubusercontent.com/dhungx/modules-shadowrocket/refs/heads/main/js/locket/deleteHeader.js, timeout=60, tag=RevenueCat Delete Header
+
+http-response ^https://api\.revenuecat\.com/.+/(receipts$|subscribers/[^/]+$) script-path=https://raw.githubusercontent.com/quocchienn/Make/refs/heads/crack/crack.js, requires-body=true, timeout=5, tag=Crack Universal
+
+http-request ^https://api.revenuecat.com/.+/(receipts$|subscribers/?(.*?)*$) script-path=https://raw.githubusercontent.com/quocchienn/Make/refs/heads/crack/VSCO.js, requires-body=true, timeout=5, tag=VSCO
+
+# ===== PicsArt =====
+http-request ^https://api.picsart.com/gw-v2/shop/subscription/apple/purchases script-path=https://raw.githubusercontent.com/quocchienn/Make/refs/heads/crack/PicsArt.js, requires-body=true, timeout=5, tag=PicsArt
+
+# ===== Alight Motion =====
+http-response ^https://us-central1-alight-creative.cloudfunctions.net/getAccountStatusAndLicenses script-path=https://raw.githubusercontent.com/quocchienn/Make/refs/heads/crack/AlightMotion.js, requires-body=true, timeout=5, tag=Alight Motion
+
+# ===== Sandbox Pixel Art =====
+http-response ^https://api.sandbox.love/accounts/current script-path=https://raw.githubusercontent.com/quocchienn/Make/refs/heads/crack/SandBox.js, requires-body=true, timeout=5, tag=Sandbox Pixel Art
+
+# ===== YouTube Premium Customization =====
+youtube.response = type=http-response, pattern=^https://youtubei\.googleapis\.com/youtubei/v1/(browse|next|player|search|reel/reel_watch_sequence|guide|account/get_setting|get_watch), requires-body=true, max-size=-1, binary-body-mode=1, engine=script, script-path=https://raw.githubusercontent.com/dhungx/modules-shadowrocket/refs/heads/main/js/Yt/youtube.response.preview.js, argument="{\"lyricLang\":\"vi\",\"captionLang\":\"vi\",\"blockUpload\":true,\"blockImmersive\":true,\"debug\":false}", tag=YouTube Mod
+
+# ===== Spotify Unlock =====
+spotify-json = type=http-request, pattern=^https:\/\/spclient\.wg\.spotify\.com\/(artistview\/v1\/artist|album-entity-view\/v2\/album)\/, requires-body=false, script-path=https://raw.githubusercontent.com/quocchienn/Make/refs/heads/crack/spotify-json.js, tag=Spotify JSON
+
+spotify-proto = type=http-response, pattern=^https:\/\/spclient\.wg\.spotify\.com\/(bootstrap\/v1\/bootstrap|user-customization-service\/v1\/customize)$, requires-body=true, binary-mode=true, max-size=0, script-path=https://raw.githubusercontent.com/quocchienn/Make/refs/heads/crack/spotify-proto.js, tag=Spotify Proto
+
+# ===== Meitu Wink VIP =====
+WinkVipCrack = type=http-response, pattern=^https?:\/\/api-sub\.meitu\.com\/v2\/user\/vip_info_by_group\.json, requires-body=true, script-path=https://raw.githubusercontent.com/quocchienn/co_tien_khong/refs/heads/Module/WinkVipCrack.js, tag=Wink Meitu VIP
+
+# ===== SoundCloud Go+ =====
+SoundCloudGoPlus = type=http-response, pattern=https://api-mobile.soundcloud.com/configuration/ios, requires-body=true, script-path=https://raw.githubusercontent.com/Marol62926/MarScrpt/main/soundcloud.js, tag=SoundCloud Go+
+
+# ===== Adobe Lightroom VIP =====
+LightRoomVIP = type=http-response, pattern=^https:\/\/photos\.adobe\.io\/v2\/accounts*, requires-body=true, script-path=https://raw.githubusercontent.com/litieyin/AD_VIP/main/Script/lightroom.js, tag=Lightroom VIP
+
+# ===== CapCut VIP =====
+CapCutVIP = type=http-response, pattern=^https:\/\/api-capcut\.com\/user\/account\/info, requires-body=true, script-path=https://raw.githubusercontent.com/Keywos/ios/main/capcut.js, tag=CapCut VIP
+
